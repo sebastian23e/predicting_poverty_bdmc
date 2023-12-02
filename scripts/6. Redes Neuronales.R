@@ -8,26 +8,7 @@ cat('\014')
 install.packages("pacman")
 library(pacman)
 # cargar librerias 
-p_load(tidyverse, # Manipular dataframes
-       rio, # Importar datos fácilmente
-       plotly, # Gráficos interactivos
-       leaflet, # Mapas interactivos
-       rgeos, # Calcular centroides de un polígono
-       units, # unidades
-       sf, # Leer/escribir/manipular datos espaciales
-       osmdata, # Obtener datos de OpenStreetMap (OSM)
-       tidymodels, # Modelado de datos limpios y ordenados
-       randomForest, # Modelos de bosque aleatorio
-       rattle, # Interfaz gráfica para el modelado de datos
-       spatialsample, # Muestreo espacial para modelos de aprendizaje automático
-       xgboost,
-       scals,
-       purr,
-       glmnet,
-       keras, 
-       themis,
-       yardstick,
-       tensorflow, caret, reticulate) 
+p_load(tidyverse,rio,tidymodels, keras, ggplot2, themis, yardstick, tensorflow) 
 
 # cargar base de datos 
 bd <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_h.csv")
