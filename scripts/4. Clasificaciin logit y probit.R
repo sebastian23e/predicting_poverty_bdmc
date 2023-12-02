@@ -24,13 +24,25 @@ p_load(tidyverse, # Manipular dataframes
        xgboost,
        scals,
        purr,
-       glmnet) 
+       glmnet, 
+       keras,
+       themis,
+       yardstick,
+       tensorflow) 
+
+#Creación de directorios
+templates <- paste0(getwd(),'/templates/') # Directorio para crear templates
+
 
 # cargar base de datos 
-bd <- load(paste0(getwd(),'/stores/','base_completa.RData'))
+load(paste0(getwd(),'/stores/','base_completa.RData'))
+bd<-base.completa
+
 #Creación de subsets de entrenamiento y prueba
 train <-  bd %>%
   subset(sample == "train")
+train <- train%>%
+  select(-c(id,l_indigencia, l_pobreza, sample, ingtotug))
 
 # crear subset de testeo
 test <- bd %>%
@@ -38,18 +50,17 @@ test <- bd %>%
 
 
 ##Crear un recipe para ambos modelos HACIENDO OVERSAMPLING
+
 receta<-recipe(pobre~., data=train)%>%
-  step_center(all_predictors()) %>% # Centramos todas las variables
-  step_scale(all_predictors())%>%
+  step_normalize(all_numeric_predictors()) %>% # normalizamos las variables categóricas
   step_upsample(pobre, over_ratio=0.8)
 
 # Reescalamos y términamos de hacerel procedimiento de oversampling 
 over_train<- prep(receta)%>% bake(new_data=NULL)
-over_train<-over_train%>%
-  sample_n(nrom(over_train))
+
 
 #Convertir a formato de matriz y vector que incluya 
-x_train_over<- as.matrix(over_tarin%>%select(variables_exogenas))
+x_train_over<- as.matrix(over_train%>%select(-c(pobre)))
 y_train_over<- over_train%>%pull(pobre)
 
 #-------------------Modelo Logit----------------------
@@ -65,16 +76,20 @@ workflow_logit <- workflow() %>%
 
 #Entrenamos el modelo con observaciones train
 modelo_logit <- workflow_logit %>%
-  fit(data = train)
+  fit(data = over_train)
 
 #Tomamos las predicciones del conjunto de prueba
-test_data <- test_data %>%
-  mutate(predicciones_logit = predict(modelo_logit, test_data)$.pred_class)
+test <- test %>%
+  mutate(pobre = predict(modelo_logit, test)$.pred_class)
 
-#Observemos la matriz de confusión
-matriz_logit <- conf_mat(test_data, truth = ciudad, estimate = predicciones_logit)
-print(matriz_logit)
+#No podemos observar los valores de la matriz de confusión
 
+template.kagle<-test %>% 
+  select(id, pobre) 
+
+write.csv(template.kagle, file= paste0(templates,'04_clasificación_logit_oversampling_0.8.csv'),
+          row.names = F)
+ 
 
 
 
