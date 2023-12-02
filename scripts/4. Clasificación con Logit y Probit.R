@@ -22,7 +22,7 @@ p_load(tidyverse, # Manipular dataframes
        purrr,
        glmnet) 
 # cargar base de datos 
-bd <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_h.csv")
+bd <- load(paste0(getwd(),'/stores/','base_completa.RData'))
 
 #Creación de subsets de entrenamiento y prueba
 train <-  bd %>%
@@ -35,9 +35,9 @@ test <- bd %>%
 
 ##Crear un recipe para ambos modelos:
 receta<-recipe(pobre~., data=train)%>%
-  step_center(all_predictors()) %>% # Centramos todas las variables
+  step_normalize(all_numeric_predictors()) %>% # Centramos todas las variables
   step_scale(all_predictors()) # Reescalamos
-#step_rm(variable a eliminar)
+  step_rm()
 
 #-------------------Modelo Logit----------------------
 #Creamos la específicación del modelo, en este caso probit

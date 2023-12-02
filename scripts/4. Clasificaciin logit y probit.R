@@ -27,8 +27,7 @@ p_load(tidyverse, # Manipular dataframes
        glmnet) 
 
 # cargar base de datos 
-bd <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_h.csv")
-
+bd <- load(paste0(getwd(),'/stores/','base_completa.RData'))
 #Creación de subsets de entrenamiento y prueba
 train <-  bd %>%
   subset(sample == "train")
