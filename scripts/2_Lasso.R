@@ -21,3 +21,6 @@ p_load(tidyverse, # Manipular dataframes
        xgboost,
        purrr,
        glmnet) 
+
+# Cargar datos ------------------------------------------------------------
+load(paste0(getwd(),'/stores/','base_completa.RData'))
