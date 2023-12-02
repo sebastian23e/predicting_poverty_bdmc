@@ -1,5 +1,5 @@
 
-### modelo de predicción: ridge  ##### 
+### modelo de predicción: Logit y Probit
 
 #Limpieza area de trabajo 
 rm(list=ls())
