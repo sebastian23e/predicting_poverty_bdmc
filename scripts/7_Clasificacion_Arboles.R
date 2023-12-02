@@ -91,4 +91,20 @@ best_params <- tune_tree %>% select_best(metric = "accuracy")
 best_params
 
 
+# Entrenar ----------------------------------------------------------------
+best_tree_fit <- finalize_workflow(workflow_1.1, best_params) %>%
+  fit(data = over_train)
 
+# Vector predicciones
+test <- test %>%
+  mutate(predicciones_tree = predict(best_tree_fit, test)$.pred_class)
+
+# Matriz de confusion y metricas ------------------------------------------
+confusion_matrix <- conf_mat(test, truth = pobre, estimate = predicciones_tree)
+
+# Generar template --------------------------------------------------------
+template.kaggle <- test %>% 
+  select(id, predicciones_tree)
+write.csv(template.kaggle, 
+          file= paste0(templates,'07_clasificación_trees_oversampling_0.8_treedepth_5_min_1.csv'),
+          row.names = F)

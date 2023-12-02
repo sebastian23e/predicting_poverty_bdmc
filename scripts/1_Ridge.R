@@ -1,10 +1,11 @@
-# MODELO REGRESION RIDGE
 
-# Limpieza area de trabajo ------------------------------------------------
+### modelo de clasificación: Random Forest
+
+#Limpieza area de trabajo 
 rm(list=ls())
 cat('\014')
 
-# Paquetes ----------------------------------------------------------------
+# cargar paquetes 
 require("pacman")
 # cargar librerias 
 p_load(tidyverse, # Manipular dataframes
@@ -20,18 +21,29 @@ p_load(tidyverse, # Manipular dataframes
        spatialsample, # Muestreo espacial para modelos de aprendizaje automático
        xgboost,
        purrr,
-       glmnet) 
+       glmnet, 
+       keras,
+       themis,
+       yardstick,
+       tensorflow) 
+
+#Creación de directorios
+templates <- paste0(getwd(),'/templates/') # Directorio para crear templates
 
 # cargar base de datos 
-bd <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_h.csv")
+load(paste0(getwd(),'/stores/','base_completa.RData'))
+bd <- base.completa %>% 
+  select(-c(id,l_indigencia, l_pobreza, pobre))
 
 #Creación de subsets de entrenamiento y prueba
 train <-  bd %>%
-  subset(sample == "train")
+  subset(sample == "train") %>% 
+  select(-sample)
 
 # crear subset de testeo
 test <- bd %>%
-  subset(sample == "test")
+  subset(sample == "test") %>% 
+  select(-sample)
 
 #Especificación del modelo
 ridge<- linear_reg(penalty = tune(), mixture = 0) %>%
@@ -40,10 +52,10 @@ ridge<- linear_reg(penalty = tune(), mixture = 0) %>%
 
 # definir intervalo de parametros
 
-penalty_grid <- grid_regular(penalty(range = c(-4, 2)), levels = 30)
+penalty_grid <- grid_regular(penalty(), levels = 10)
 
 #receta de preprocesamiento
-receta <- recipe(formula = ingtotug ~ cuartos+dormitorio+tipo_vivienda+nper_ugasto+nper, data = bd) %>%
+receta <- recipe(formula = ingtotug ~ ., data = bd) %>%
   step_novel(all_nominal_predictors()) %>% 
   step_dummy(all_nominal_predictors()) %>% 
   step_zv(all_predictors()) %>% 
@@ -54,3 +66,15 @@ receta <- recipe(formula = ingtotug ~ cuartos+dormitorio+tipo_vivienda+nper_ugas
 ridge_workflow <- workflow() %>%
   add_recipe(receta) %>%
   add_model(ridge)
+
+# Busqueda hiperparametros ------------------------------------------------
+# Cross Validation
+df_fold <- vfold_cv(bd, v = 5)
+
+tune_res <- tune_grid(
+  ridge_workflow,         # El flujo de trabajo que contiene: receta y especificación del modelo
+  resamples = df_fold,  # Folds de validación cruzada
+  grid = penalty_grid,        # Grilla de valores de penalización
+  metrics = metric_set(rmse)
+)
+tune_res
