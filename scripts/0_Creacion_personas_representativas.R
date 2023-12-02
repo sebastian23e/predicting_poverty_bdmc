@@ -52,7 +52,15 @@ base.completa <- base.completa %>%
   mutate(Clase = as.factor(Clase),
          tipo_vivienda = as.factor(tipo_vivienda),
          pobre         = as.factor(pobre),
-         Dominio       = as.factor(Dominio))
+         Dominio       = as.factor(Dominio),
+         trabajo.formal          = as.factor(trabajo.formal), 
+         pension                 = as.factor(pension), 
+         subsidio.alimenticio    = as.factor(subsidio.alimenticio),
+         subsidio.transporte     = as.factor(subsidio.transporte),
+         subsidio.familiar       = as.factor(subsidio.familiar),
+         subsidio.educativo      = as.factor(subsidio.educativo), 
+         numero.menores.edad     = as.factor(numero.menores.edad)
+         )
 
 # Guardar base ------------------------------------------------------------
 save(base.completa, file= paste0(getwd(),'/stores/','base_completa.RData'))
