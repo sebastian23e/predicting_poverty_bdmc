@@ -1,19 +1,16 @@
+# MODELO CLASIFICACION RIDGE
 
-### modelo de predicción: Logit y Probit
-
-#Limpieza area de trabajo 
+# Limpieza area de trabajo ------------------------------------------------
 rm(list=ls())
 cat('\014')
 
-# cargar paquetes 
-install.packages("pacman")
-library(pacman)
+# Paquetes ----------------------------------------------------------------
+require("pacman")
 # cargar librerias 
 p_load(tidyverse, # Manipular dataframes
        rio, # Importar datos fácilmente
        plotly, # Gráficos interactivos
        leaflet, # Mapas interactivos
-       rgeos, # Calcular centroides de un polígono
        units, # unidades
        sf, # Leer/escribir/manipular datos espaciales
        osmdata, # Obtener datos de OpenStreetMap (OSM)
@@ -22,10 +19,8 @@ p_load(tidyverse, # Manipular dataframes
        rattle, # Interfaz gráfica para el modelado de datos
        spatialsample, # Muestreo espacial para modelos de aprendizaje automático
        xgboost,
-       scals,
-       purr,
+       purrr,
        glmnet) 
-
 # cargar base de datos 
 bd <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_h.csv")
 
