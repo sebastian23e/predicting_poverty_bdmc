@@ -24,14 +24,12 @@ p_load(tidyverse, # Manipular dataframes
 # Cargar base de datos ----------------------------------------------------
 personas <- read.csv("https://media.githubusercontent.com/media/sebastian23e/predicting_poverty_bdmc/main/stores/data_p.csv")
 
-personas_agrupadas<-personas %>%
+personas_agrupadas <- personas %>%
   group_by(id) %>%
-  mutate(id=id)
-  mutate(nivel_edu = max(nivel_edu))%>%
-  mutate(trabajo_formal= ifelse(trabajo_formal==1,1,0)) %>%          
-  mutate(pension=ifelse(pension==1,1,0))
-  
-  for (i in 1:nrow(personas)) {
+  summarise(nivel = max(nivel_edu), trabajo.formal = ifelse(sum(trabajo_formal) > 0, 1, 0), 
+            pension = ifelse(sum(pension) > 0, 1, 0))
+
+for (i in 1:nrow(personas)) {
     # Verifica si la Variable es igual al valor deseado
     if (personas$Variable[i] == ) {
       # Realiza alguna acción si se cumple la condición
