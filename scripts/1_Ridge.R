@@ -52,10 +52,10 @@ ridge<- linear_reg(penalty = tune(), mixture = 0) %>%
 
 # definir intervalo de parametros
 
-penalty_grid <- grid_regular(penalty(), levels = 10)
+penalty_grid <- grid_regular(penalty(), levels = 100)
 
 #receta de preprocesamiento
-receta <- recipe(formula = ingtotug ~ ., data = bd) %>%
+receta <- recipe(formula = ingtotug ~ ., data = train) %>%
   step_novel(all_nominal_predictors()) %>% 
   step_dummy(all_nominal_predictors()) %>% 
   step_zv(all_predictors()) %>% 
@@ -69,7 +69,7 @@ ridge_workflow <- workflow() %>%
 
 # Busqueda hiperparametros ------------------------------------------------
 # Cross Validation
-df_fold <- vfold_cv(bd, v = 5)
+df_fold <- vfold_cv(train, v = 5)
 
 tune_res <- tune_grid(
   ridge_workflow,         # El flujo de trabajo que contiene: receta y especificación del modelo
