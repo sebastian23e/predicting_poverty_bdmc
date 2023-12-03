@@ -64,4 +64,4 @@ base.completa <- base.completa %>%
 
 # Guardar base ------------------------------------------------------------
 save(base.completa, file= paste0(getwd(),'/stores/','base_completa.RData'))
-save(base.completa, file= paste0(getwd(),'/stores/','base_completa.csv'))
+write.csv(base.completa, file= paste0(getwd(),'/stores/','base_completa.csv'))
