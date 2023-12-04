@@ -7,4 +7,5 @@ El repositorio contiene cinco carpetas clave:
 - `document`: contiene el documento final en formato `latex` y `pdf`, y todos los subproductos necesarios para renderizar el archivo `pdf`. El mismo archivo latex es capaz de obtener las graficas directamente de la carpeta `views`.
 - `scripts`: contiene todos los scripts utilizados para el taller, completamente reproducibles.
 - `stores`: contiene todas las bases necesarias para la reproduccion del repositorio.
+- `templates` : contiene todos los scripts realizados para generar modelos de predicción.
 - `views`: contiene todas las figuras realizadas para el taller.
