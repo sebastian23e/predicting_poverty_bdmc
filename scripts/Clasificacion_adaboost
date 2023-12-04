@@ -1,10 +1,10 @@
 # MODELO CLASIFICACION ADABOOST
 
-# Limpieza area de trabajo ------------------------------------------------
+#Limpieza area de trabajo 
 rm(list=ls())
 cat('\014')
 
-# Paquetes ----------------------------------------------------------------
+# cargar paquetes 
 require("pacman")
 # cargar librerias 
 p_load(tidyverse, # Manipular dataframes
@@ -20,25 +20,37 @@ p_load(tidyverse, # Manipular dataframes
        spatialsample, # Muestreo espacial para modelos de aprendizaje automático
        xgboost,
        purrr,
-       glmnet) 
-#Creación de subsets de entrenamiento y prueba
-train <-  bd %>%
-  subset(sample == "train")
+       glmnet, 
+       keras,
+       themis,
+       yardstick,
+       tensorflow) 
+
+#Creación de directorios
+templates <- paste0(getwd(),'/templates/') # Directorio para crear templates
+
+# cargar base de datos 
+load(paste0(getwd(),'/predicting_poverty_bdmc','/stores/','base_completa.RData'))
+bd <- base.completa 
 
 # crear subset de testeo
 test <- bd %>%
   subset(sample == "test")
 
-
-##Crear un recipe para ambos modelos:
-receta<-recipe(pobre~., data=train)%>%
-  step_normalize(all_numeric_predictors()) %>% # Centramos todas las variables
-  step_scale(all_predictors()) # Reescalamos
-  step_rm()
+## Crear un recipe para ambos modelos:
+receta <- recipe(pobre ~ ., data = train) %>%
+    step_normalize(all_numeric_predictors()) %>% # Normalizamos las variables numéricas
 
 # Instalar y cargar el paquete adabag
-install.packages("adabag")
-library(adabag)
+if (!requireNamespace("adabag", quietly = TRUE)) {
+  install.packages("adabag")
+}
+
+# Cargar adabag sin cargar rgl
+library(adabag, exclude = c("rgl"))
+
+install.packages("ROSE")
+library(ROSE)
 
 # Crear un conjunto de entrenamiento balanceado mediante SMOTE
 set.seed(123)  # Fijar semilla para reproducibilidad
