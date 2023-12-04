@@ -49,7 +49,7 @@ test <- bd %>%
 
 receta<-recipe(pobre~., data=train)%>%
   step_normalize(all_numeric_predictors()) %>% # normalizamos las variables categóricas
-  step_upsample(pobre, over_ratio=0.8)
+  step_upsample(pobre, over_ratio=0.5)
 
 # Reescalamos y términamos de hacerel procedimiento de oversampling 
 over_train<- prep(receta)%>% bake(new_data=NULL)
@@ -61,8 +61,8 @@ y_train_over<- over_train%>%pull(pobre)
 
 # Tuning ------------------------------------------------------------------
 tune_grid_tree <- grid_regular(
-  tree_depth(range = c(1,20)),
-  min_n(range = c(1,20)),
+  tree_depth(range = c(1,8)),
+  min_n(range = c(1,5)),
   levels = 100
 )
 
@@ -106,5 +106,5 @@ confusion_matrix <- conf_mat(test, truth = pobre, estimate = predicciones_tree)
 template.kaggle <- test %>% 
   select(id, predicciones_tree)
 write.csv(template.kaggle, 
-          file= paste0(templates,'07_clasificación_trees_oversampling_0.8_treedepth_5_min_1.csv'),
+          file= paste0(templates,'07_clasificación_trees_oversampling_0.5_treedepth_5_min_1.csv'),
           row.names = F)

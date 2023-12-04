@@ -50,7 +50,7 @@ ridge<- linear_reg(penalty = tune(), mixture = 0) %>%
 
 # definir intervalo de parametros
 
-penalty_grid <- grid_regular(penalty(), levels = 100)
+penalty_grid <- grid_regular(penalty(), levels = 1000)
 
 #receta de preprocesamiento
 receta <- recipe(formula = ingtotug ~ ., data = train) %>%

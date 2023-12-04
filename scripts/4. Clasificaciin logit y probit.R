@@ -53,7 +53,7 @@ test <- bd %>%
 
 receta<-recipe(pobre~., data=train)%>%
   step_normalize(all_numeric_predictors()) %>% # normalizamos las variables categóricas
-  step_upsample(pobre, over_ratio=0.8)
+  step_upsample(pobre, over_ratio=1)
 
 # Reescalamos y términamos de hacerel procedimiento de oversampling 
 over_train<- prep(receta)%>% bake(new_data=NULL)
@@ -107,16 +107,22 @@ workflow_probit <- workflow() %>%
   add_model(probit)
 
 #Entrenamos el modelo de probit con la data de entrenamiento
-modelo_probit <- fit(workflow_probit, data = train)
+modelo_probit <- workflow_probit%>%
+  fit( data = over_train)
 
 #Vemos las predicciones con el conjunto de prueba
 test <- test %>%
-  mutate(predicciones_probit = predict(modelo_probit, test)$.pred_class)
+  mutate(pobre = predict(modelo_probit, test)$.pred_class)
 
 
-#Observamos la matriz de cinfución para el modelo
-matriz_probit <- conf_mat(test, truth = pobre, estimate = predicciones_probit)
-print(matriz_probit)
+#No podemos observar los valores de la matriz de confusión
+
+template.kagle<-test %>% 
+  select(id, pobre) 
+
+write.csv(template.kagle, file= paste0(templates,'04_clasificación_probit_oversampling_1.csv'),
+          row.names = F)
+
 
 
 
